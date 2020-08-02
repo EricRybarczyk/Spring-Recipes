@@ -1,6 +1,7 @@
 package dev.ericrybarczyk.springrecipes.domain;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -16,23 +17,25 @@ public class Recipe {
     private Integer servings;
     private String source;
     private String url;
+
+    @Lob // allow longer than default 255, could also use @Column to specify length and keep it varchar
     private String directions;
 
     @Enumerated(value = EnumType.STRING)
     private Difficulty difficulty;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
-    private Set<Ingredient> ingredientList;
+    private Set<Ingredient> ingredients = new HashSet<>();
 
     @ManyToMany
     @JoinTable(name = "recipe_category", joinColumns = @JoinColumn(name = "recipe_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
-    private Set<Category> categories;
+    private Set<Category> categories = new HashSet<>();
 
     @Lob
     private Byte[] image;
 
     @OneToOne(cascade = CascadeType.ALL)
-    private Notes note;
+    private Notes notes;
 
 
     public Long getId() {
@@ -107,12 +110,12 @@ public class Recipe {
         this.difficulty = difficulty;
     }
 
-    public Set<Ingredient> getIngredientList() {
-        return ingredientList;
+    public Set<Ingredient> getIngredients() {
+        return ingredients;
     }
 
-    public void setIngredientList(Set<Ingredient> ingredientList) {
-        this.ingredientList = ingredientList;
+    public void setIngredients(Set<Ingredient> ingredientList) {
+        this.ingredients = ingredientList;
     }
 
     public Set<Category> getCategories() {
@@ -131,11 +134,11 @@ public class Recipe {
         this.image = image;
     }
 
-    public Notes getNote() {
-        return note;
+    public Notes getNotes() {
+        return notes;
     }
 
-    public void setNote(Notes note) {
-        this.note = note;
+    public void setNotes(Notes note) {
+        this.notes = note;
     }
 }
