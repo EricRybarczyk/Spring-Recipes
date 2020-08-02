@@ -11,10 +11,12 @@
         <tr>
             <td>ID</td>
             <td>Description</td>
+            <td>Source</td>
         </tr>
         <tr th:each="recipe : ${recipes}">
-            <td th:text="${recipe.id}">0001</td>
-            <td th:text="${recipe.description}">recipe description here</td>
+            <td th:text="${recipe.getId()}">0001</td>
+            <td th:text="${recipe.getDescription()}">recipe description here</td>
+            <td><a th:href="${recipe.getUrl()}" th:target="_blank"><span th:text="${recipe.getSource()}"></span></a></td>
         </tr>
     </table>
 
