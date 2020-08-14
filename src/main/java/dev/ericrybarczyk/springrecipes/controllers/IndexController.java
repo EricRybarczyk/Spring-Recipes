@@ -1,15 +1,12 @@
 package dev.ericrybarczyk.springrecipes.controllers;
 
-import dev.ericrybarczyk.springrecipes.domain.Category;
-import dev.ericrybarczyk.springrecipes.domain.UnitOfMeasure;
-import dev.ericrybarczyk.springrecipes.repositories.CategoryRepository;
-import dev.ericrybarczyk.springrecipes.repositories.UnitOfMeasureRepository;
 import dev.ericrybarczyk.springrecipes.services.RecipeService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import java.util.Optional;
 
+@Slf4j
 @Controller
 public class IndexController {
 
@@ -21,6 +18,8 @@ public class IndexController {
 
     @RequestMapping({"", "/", "index", "index.html"})
     public String getIndexPage(Model model) {
+
+        log.debug("*** Sample logging in the IndexController, thanks to Lombok ***");
 
         model.addAttribute("recipes", recipeService.getRecipes());
 

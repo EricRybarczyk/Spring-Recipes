@@ -4,15 +4,18 @@ import dev.ericrybarczyk.springrecipes.domain.*;
 import dev.ericrybarczyk.springrecipes.repositories.CategoryRepository;
 import dev.ericrybarczyk.springrecipes.repositories.RecipeRepository;
 import dev.ericrybarczyk.springrecipes.repositories.UnitOfMeasureRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Component
 public class DataInitializer implements ApplicationListener<ContextRefreshedEvent> {
 
@@ -40,7 +43,9 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
     }
 
     @Override
+    @Transactional // solves intermittent org.hibernate.LazyInitializationException
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
+        log.debug("** Loading sample data in DataInitializer ***");
         recipeRepository.saveAll(getRecipes());
     }
 
