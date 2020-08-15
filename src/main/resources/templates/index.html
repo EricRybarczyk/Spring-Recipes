@@ -3,22 +3,58 @@
 <head>
     <meta charset="UTF-8" />
     <title>Recipes Home</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+          integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"
+            integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
 </head>
 <body>
-    <h1>Recipes List</h1>
 
-    <table>
-        <tr>
-            <td>ID</td>
-            <td>Description</td>
-            <td>Source</td>
-        </tr>
-        <tr th:each="recipe : ${recipes}">
-            <td th:text="${recipe.getId()}">0001</td>
-            <td th:text="${recipe.getDescription()}">recipe description here</td>
-            <td><a th:href="${recipe.getUrl()}" th:target="_blank"><span th:text="${recipe.getSource()}"></span></a></td>
-        </tr>
-    </table>
+<div class="container-fluid" style="margin-top: 20px">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="panel panel-primary">
+
+                <div class="panel-heading">
+                    <h1 class="panel-title">Recipes List</h1>
+                </div>
+
+                <div class="panel-body">
+                    <div class="table-responsive" th:if="${not #lists.isEmpty(recipes)}">
+                        <table class="table table-hover">
+                            <thead class="thead-inverse">
+                                <tr>
+                                    <td>ID</td>
+                                    <td>Description</td>
+                                    <td>Source</td>
+                                </tr>
+                            </thead>
+                            <tr th:remove="all">
+                                <td>123</td>
+                                <td>recipe description here</td>
+                                <td><a href="#">source link</a></td>
+                            </tr>
+                            <tr th:remove="all">
+                                <td>456</td>
+                                <td>recipe description here</td>
+                                <td><a href="#">source link</a></td>
+                            </tr>
+                            <tr th:each="recipe : ${recipes}">
+                                <td th:text="${recipe.getId()}">789</td>
+                                <td th:text="${recipe.getDescription()}">recipe description here</td>
+                                <td><a th:href="${recipe.getUrl()}" th:target="_blank"><span th:text="${recipe.getSource()}">source link</span></a></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 
 </body>
 </html>
