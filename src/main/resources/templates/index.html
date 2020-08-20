@@ -5,11 +5,11 @@
     <title>Recipes Home</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
           integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous"
-          th:href="@{/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css}">
+          th:href="@{/webjars/bootstrap/3.4.1/css/bootstrap.min.css}">
     <script src="/webjars/jquery/1.11.1/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"
             integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"
-            th:href="@{/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js}"></script>
+            th:href="@{/webjars/bootstrap/3.4.1/js/bootstrap.min.js}"></script>
 </head>
 <body>
 
@@ -29,23 +29,24 @@
                                 <tr>
                                     <td>ID</td>
                                     <td>Description</td>
-                                    <td>Source</td>
+                                    <td>View</td>
                                 </tr>
                             </thead>
                             <tr th:remove="all">
                                 <td>123</td>
                                 <td>recipe description here</td>
-                                <td><a href="#">source link</a></td>
+                                <td><a href="#">view</a></td>
                             </tr>
                             <tr th:remove="all">
                                 <td>456</td>
                                 <td>recipe description here</td>
-                                <td><a href="#">source link</a></td>
+                                <td><a href="#">view</a></td>
                             </tr>
                             <tr th:each="recipe : ${recipes}">
+                                <!--/*@thymesVar id="recipe" type="dev.ericrybarczyk.springrecipes.domain.Recipe"*/-->
                                 <td th:text="${recipe.getId()}">789</td>
                                 <td th:text="${recipe.getDescription()}">recipe description here</td>
-                                <td><a th:href="${recipe.getUrl()}" th:target="_blank"><span th:text="${recipe.getSource()}">source link</span></a></td>
+                                <td><a href="#" th:href="@{'/recipe/show/' + ${recipe.getId()}}">view</a></td>
                             </tr>
                         </table>
                     </div>
