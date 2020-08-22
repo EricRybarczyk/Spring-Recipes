@@ -1,9 +1,13 @@
 package dev.ericrybarczyk.springrecipes.services;
 
+import dev.ericrybarczyk.springrecipes.commands.RecipeCommand;
+import dev.ericrybarczyk.springrecipes.converters.RecipeCommandToRecipe;
+import dev.ericrybarczyk.springrecipes.converters.RecipeToRecipeCommand;
 import dev.ericrybarczyk.springrecipes.domain.Recipe;
 import dev.ericrybarczyk.springrecipes.repositories.RecipeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -13,9 +17,13 @@ import java.util.Set;
 public class RecipeServiceImpl implements RecipeService {
 
     private final RecipeRepository recipeRepository;
+    private final RecipeCommandToRecipe recipeCommandToRecipe;
+    private final RecipeToRecipeCommand recipeToRecipeCommand;
 
-    public RecipeServiceImpl(RecipeRepository recipeRepository) {
+    public RecipeServiceImpl(RecipeRepository recipeRepository, RecipeCommandToRecipe recipeCommandToRecipe, RecipeToRecipeCommand recipeToRecipeCommand) {
         this.recipeRepository = recipeRepository;
+        this.recipeCommandToRecipe = recipeCommandToRecipe;
+        this.recipeToRecipeCommand = recipeToRecipeCommand;
     }
 
     @Override
@@ -30,4 +38,17 @@ public class RecipeServiceImpl implements RecipeService {
     public Optional<Recipe> findById(Long id) {
         return recipeRepository.findById(id);
     }
+
+    @Override
+    @Transactional
+    public RecipeCommand saveRecipeCommand(RecipeCommand recipeCommand) {
+        Recipe detachedRecipe = recipeCommandToRecipe.convert(recipeCommand);
+        if (detachedRecipe != null) {
+            Recipe savedRecipe = recipeRepository.save(detachedRecipe);
+            log.debug("Saved Recipe with ID {}", savedRecipe.getId());
+            return recipeToRecipeCommand.convert(savedRecipe);
+        }
+        return null;
+    }
+
 }
