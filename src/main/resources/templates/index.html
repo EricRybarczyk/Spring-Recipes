@@ -10,6 +10,15 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"
             integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"
             th:href="@{/webjars/bootstrap/3.4.1/js/bootstrap.min.js}"></script>
+    <script type="application/javascript">
+        $(document).ready(function(){
+            $(".deletePrompt").click(function(){
+                if (!confirm("Are you sure?")){
+                    return false;
+                }
+            });
+        });
+    </script>
 </head>
 <body>
 <!--/*@thymesVar id="recipes" type="java.util.List"*/-->
@@ -32,6 +41,7 @@
                                     <td>Description</td>
                                     <td>View</td>
                                     <td>Edit</td>
+                                    <td>Delete</td>
                                 </tr>
                             </thead>
                             <tr th:remove="all">
@@ -39,19 +49,21 @@
                                 <td>recipe description here</td>
                                 <td><a href="#">view</a></td>
                                 <td><a href="#">edit</a></td>
+                                <td><a href="#">delete</a></td>
                             </tr>
                             <tr th:remove="all">
                                 <td>456</td>
                                 <td>recipe description here</td>
                                 <td><a href="#">view</a></td>
                                 <td><a href="#">edit</a></td>
+                                <td><a href="#">delete</a></td>
                             </tr>
                             <tr th:each="recipe : ${recipes}">
-                                <!--/*@thymesVar id="recipe" type="dev.ericrybarczyk.springrecipes.domain.Recipe"*/-->
                                 <td th:text="${recipe.getId()}">789</td>
                                 <td th:text="${recipe.getDescription()}">recipe description here</td>
                                 <td><a href="#" th:href="@{'/recipe/' + ${recipe.getId()} + '/show'}">view</a></td>
                                 <td><a href="#" th:href="@{'/recipe/' + ${recipe.getId()} + '/edit'}">edit</a></td>
+                                <td><a href="#" class="deletePrompt" th:href="@{'/recipe/' + ${recipe.getId()} + '/delete'}">delete</a></td>
                             </tr>
                         </table>
                     </div>

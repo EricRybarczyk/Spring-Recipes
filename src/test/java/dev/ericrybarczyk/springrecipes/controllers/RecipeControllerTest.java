@@ -85,4 +85,17 @@ public class RecipeControllerTest {
                 .andExpect(MockMvcResultMatchers.model().attributeExists("recipe"));
     }
 
+    @Test
+    public void testDeleteAction() throws Exception {
+        // given
+
+        // when
+
+        // then
+        mockMvc.perform(MockMvcRequestBuilders.get("/recipe/1/delete"))
+                .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.view().name("redirect:/"));
+        Mockito.verify(recipeService, Mockito.times(1)).deleteById(ArgumentMatchers.anyLong());
+    }
+
 }
