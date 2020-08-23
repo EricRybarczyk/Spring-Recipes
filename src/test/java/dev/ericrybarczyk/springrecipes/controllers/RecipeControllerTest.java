@@ -38,15 +38,33 @@ public class RecipeControllerTest {
         Recipe recipe = new Recipe();
         recipe.setId(1L);
         Optional<Recipe> optionalRecipe = Optional.of(recipe);
-
-        // when
         Mockito.when(recipeService.findById(ArgumentMatchers.anyLong())).thenReturn(optionalRecipe);
 
-        // then
+        // when-then
         mockMvc.perform(MockMvcRequestBuilders.get("/recipe/1/show"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("recipe/show"))
                 .andExpect(MockMvcResultMatchers.model().attributeExists("recipe"));
+    }
+
+    @Test
+    public void testViewInvalidRecipeId() throws Exception {
+        // given
+
+        // when-then
+        mockMvc.perform(MockMvcRequestBuilders.get("/recipe/5150/show"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("error/error"));
+    }
+
+    @Test
+    public void testEditInvalidRecipeId() throws Exception {
+        // given
+
+        // when-then
+        mockMvc.perform(MockMvcRequestBuilders.get("/recipe/5150/edit"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("error/error"));
     }
 
     @Test

@@ -9,13 +9,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
+import static dev.ericrybarczyk.springrecipes.controllers.ViewConstants.ERROR_VIEW;
+
 @Slf4j
 @Controller
 public class RecipeController {
 
     private final RecipeService recipeService;
-
-    private static final String ERROR_VIEW ="error/error";
 
     public RecipeController(RecipeService recipeService) {
         this.recipeService = recipeService;
