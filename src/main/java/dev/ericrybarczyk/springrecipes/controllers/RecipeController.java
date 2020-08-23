@@ -18,6 +18,8 @@ public class RecipeController {
 
     private final RecipeService recipeService;
 
+    private static final String ERROR_VIEW ="error/error";
+
     public RecipeController(RecipeService recipeService) {
         this.recipeService = recipeService;
     }
@@ -30,7 +32,7 @@ public class RecipeController {
             return "recipe/show";
         } else {
             log.warn("No Recipe found for requested ID {}", id);
-            return "error/error";
+            return ERROR_VIEW;
         }
     }
 
@@ -41,9 +43,15 @@ public class RecipeController {
     }
 
     @RequestMapping("recipe/{id}/edit")
-    public String updateRecipe(@PathVariable String id, Model model) {
-        model.addAttribute("recipe", recipeService.findCommandById(Long.valueOf(id)));
-        return "recipe/recipeform";
+    public String editRecipe(@PathVariable String id, Model model) {
+        RecipeCommand recipeCommand = recipeService.findCommandById(Long.valueOf(id));
+        if (recipeCommand != null) {
+            model.addAttribute("recipe", recipeCommand);
+            return "recipe/recipeform";
+        } else {
+            log.warn("No Recipe found for requested ID {}", id);
+            return ERROR_VIEW;
+        }
     }
 
     @PostMapping
@@ -52,4 +60,5 @@ public class RecipeController {
         RecipeCommand savedCommand = recipeService.saveRecipeCommand(command);
         return String.format("redirect:/recipe/%s/show", savedCommand.getId());
     }
+
 }
