@@ -41,6 +41,16 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     @Transactional
+    public RecipeCommand findCommandById(Long id) {
+        Optional<Recipe> optionalRecipe = this.findById(id);
+        if (optionalRecipe.isEmpty()) {
+            log.warn("No Recipe found for requested id {}", id);
+        }
+        return recipeToRecipeCommand.convert(optionalRecipe.orElse(null));
+    }
+
+    @Override
+    @Transactional
     public RecipeCommand saveRecipeCommand(RecipeCommand recipeCommand) {
         Recipe detachedRecipe = recipeCommandToRecipe.convert(recipeCommand);
         if (detachedRecipe != null) {
