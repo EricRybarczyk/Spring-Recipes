@@ -1,11 +1,13 @@
 package dev.ericrybarczyk.springrecipes.domain;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import javax.persistence.*;
 import java.math.BigDecimal;
 
-@Data
+@Getter
+@Setter
 @EqualsAndHashCode(exclude = {"recipe"})
 @Entity
 public class Ingredient {
@@ -23,14 +25,22 @@ public class Ingredient {
     @ManyToOne
     private Recipe recipe;
 
+    public Ingredient() {
+
+    }
+
     public Ingredient(String description, BigDecimal quantity, UnitOfMeasure unitOfMeasure) {
         this.description = description;
         this.quantity = quantity;
         this.unitOfMeasure = unitOfMeasure;
     }
 
-    public Ingredient() {
-
+    public Ingredient(String description, BigDecimal quantity, UnitOfMeasure unitOfMeasure, Recipe recipe) {
+        this.description = description;
+        this.quantity = quantity;
+        this.unitOfMeasure = unitOfMeasure;
+        this.recipe = recipe;
     }
+
 
 }
