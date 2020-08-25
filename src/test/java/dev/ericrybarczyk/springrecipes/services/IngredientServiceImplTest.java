@@ -7,6 +7,7 @@ import dev.ericrybarczyk.springrecipes.converters.UnitOfMeasureCommandToUnitOfMe
 import dev.ericrybarczyk.springrecipes.converters.UnitOfMeasureToUnitOfMeasureCommand;
 import dev.ericrybarczyk.springrecipes.domain.Ingredient;
 import dev.ericrybarczyk.springrecipes.domain.Recipe;
+import dev.ericrybarczyk.springrecipes.repositories.IngredientRepository;
 import dev.ericrybarczyk.springrecipes.repositories.RecipeRepository;
 import dev.ericrybarczyk.springrecipes.repositories.UnitOfMeasureRepository;
 import org.junit.Before;
@@ -30,6 +31,9 @@ public class IngredientServiceImplTest {
     private RecipeRepository recipeRepository;
 
     @Mock
+    private IngredientRepository ingredientRepository;
+
+    @Mock
     UnitOfMeasureRepository unitOfMeasureRepository;
 
     private IngredientService ingredientService;
@@ -41,7 +45,7 @@ public class IngredientServiceImplTest {
         MockitoAnnotations.initMocks(this);
         ingredientToIngredientCommand = new IngredientToIngredientCommand(new UnitOfMeasureToUnitOfMeasureCommand());
         ingredientCommandToIngredient = new IngredientCommandToIngredient(new UnitOfMeasureCommandToUnitOfMeasure());
-        ingredientService = new IngredientServiceImpl(recipeRepository, unitOfMeasureRepository, ingredientToIngredientCommand, ingredientCommandToIngredient);
+        ingredientService = new IngredientServiceImpl(recipeRepository, ingredientRepository, unitOfMeasureRepository, ingredientToIngredientCommand, ingredientCommandToIngredient);
     }
 
     @Test
@@ -94,6 +98,27 @@ public class IngredientServiceImplTest {
         assertEquals(INGREDIENT_ID_1, savedIngredientCommand.getId());
         Mockito.verify(recipeRepository, Mockito.times(1)).findById(ArgumentMatchers.anyLong());
         Mockito.verify(recipeRepository, Mockito.times(1)).save(ArgumentMatchers.any(Recipe.class));
+    }
+
+    @Test
+    public void testDeleteRecipeIngredient() {
+        // given
+        Recipe recipe = new Recipe();
+        Ingredient ingredient = new Ingredient();
+        ingredient.setId(INGREDIENT_ID_1);
+        recipe.addIngredient(ingredient);
+        ingredient.setRecipe(recipe);
+        Optional<Recipe> optionalRecipe = Optional.of(recipe);
+        Mockito.when(recipeRepository.findById(ArgumentMatchers.anyLong())).thenReturn(optionalRecipe);
+
+        // when
+        ingredientService.deleteRecipeIngredient(RECIPE_ID, INGREDIENT_ID_1);
+
+        // then
+        Mockito.verify(recipeRepository, Mockito.times(1)).findById(ArgumentMatchers.anyLong());
+        Mockito.verify(ingredientRepository, Mockito.times(1)).deleteById(ArgumentMatchers.anyLong());
+        Mockito.verify(recipeRepository, Mockito.times(1)).save(ArgumentMatchers.any(Recipe.class));
+
     }
 
 }

@@ -5,6 +5,7 @@ import dev.ericrybarczyk.springrecipes.converters.IngredientCommandToIngredient;
 import dev.ericrybarczyk.springrecipes.converters.IngredientToIngredientCommand;
 import dev.ericrybarczyk.springrecipes.domain.Ingredient;
 import dev.ericrybarczyk.springrecipes.domain.Recipe;
+import dev.ericrybarczyk.springrecipes.repositories.IngredientRepository;
 import dev.ericrybarczyk.springrecipes.repositories.RecipeRepository;
 import dev.ericrybarczyk.springrecipes.repositories.UnitOfMeasureRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -17,12 +18,14 @@ import java.util.Optional;
 public class IngredientServiceImpl implements IngredientService {
 
     private final RecipeRepository recipeRepository;
+    private final IngredientRepository ingredientRepository;
     private final UnitOfMeasureRepository unitOfMeasureRepository;
     private final IngredientToIngredientCommand ingredientToIngredientCommand;
     private final IngredientCommandToIngredient ingredientCommandToIngredient;
 
-    public IngredientServiceImpl(RecipeRepository recipeRepository, UnitOfMeasureRepository unitOfMeasureRepository, IngredientToIngredientCommand ingredientToIngredientCommand, IngredientCommandToIngredient ingredientCommandToIngredient) {
+    public IngredientServiceImpl(RecipeRepository recipeRepository, IngredientRepository ingredientRepository, UnitOfMeasureRepository unitOfMeasureRepository, IngredientToIngredientCommand ingredientToIngredientCommand, IngredientCommandToIngredient ingredientCommandToIngredient) {
         this.recipeRepository = recipeRepository;
+        this.ingredientRepository = ingredientRepository;
         this.unitOfMeasureRepository = unitOfMeasureRepository;
         this.ingredientToIngredientCommand = ingredientToIngredientCommand;
         this.ingredientCommandToIngredient = ingredientCommandToIngredient;
@@ -95,6 +98,37 @@ public class IngredientServiceImpl implements IngredientService {
                 }
             }
         }
+    }
+
+    @Override
+    public boolean deleteRecipeIngredient(Long recipeID, Long ingredientId) {
+        // get the recipe from repository
+        Optional<Recipe> optionalRecipe = recipeRepository.findById(recipeID);
+        if (optionalRecipe.isEmpty()) {
+            log.warn("Recipe ID {} not found, failure to delete Ingredient ID {}", recipeID, ingredientId);
+            return false;
+        }
+
+        // get the ingredient from that recipe
+        Recipe recipe = optionalRecipe.get();
+        Optional<Ingredient> optionalIngredient = recipe.getIngredients().stream().filter(e -> e.getId().equals(ingredientId)).findFirst();
+        if (optionalIngredient.isEmpty()) {
+            log.warn("Recipe ID {} does not contain Ingredient ID {}, failure to delete the ingredient", recipeID, ingredientId);
+            return false;
+        }
+
+        // must remove relationships as well as removing the ingredient from the recipe
+        Ingredient ingredient = optionalIngredient.get();
+        ingredient.setRecipe(null);
+        recipe.getIngredients().remove(ingredient);
+
+        // now delete the ingredient itself, so it is not orphaned in the DB
+        ingredientRepository.deleteById(ingredientId);
+
+        // save the changes
+        recipeRepository.save(recipe);
+
+        return true;
     }
 
 }

@@ -98,6 +98,18 @@ public class IngredientControllerTest {
     }
 
     @Test
+    public void testDeleteIngredient() throws Exception {
+        // given
+
+        // when-then
+        mockMvc.perform(MockMvcRequestBuilders.get("/recipe/2/ingredient/5/delete"))
+                .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.view().name("redirect:/recipe/2/ingredient"));
+
+        Mockito.verify(ingredientService, Mockito.times(1)).deleteRecipeIngredient(ArgumentMatchers.anyLong(), ArgumentMatchers.anyLong());
+    }
+
+    @Test
     public void testSaveOrUpdate() throws Exception {
         // given
         IngredientCommand ingredientCommand = new IngredientCommand();
