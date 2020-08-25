@@ -6,7 +6,10 @@ import dev.ericrybarczyk.springrecipes.services.RecipeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import java.util.Optional;
 
 import static dev.ericrybarczyk.springrecipes.controllers.ViewConstants.ERROR_VIEW;
@@ -21,8 +24,7 @@ public class RecipeController {
         this.recipeService = recipeService;
     }
 
-    @GetMapping
-    @RequestMapping("/recipe/{id}/show")
+    @GetMapping("/recipe/{id}/show")
     public String showById(@PathVariable String id, Model model) {
         Optional<Recipe> optionalRecipe = recipeService.findById(Long.valueOf(id));
         if (optionalRecipe.isPresent()) {
@@ -34,15 +36,13 @@ public class RecipeController {
         }
     }
 
-    @GetMapping
-    @RequestMapping("recipe/new")
+    @GetMapping("recipe/new")
     public String newRecipe(Model model) {
         model.addAttribute("recipe", new RecipeCommand());
         return "recipe/recipeform";
     }
 
-    @GetMapping
-    @RequestMapping("recipe/{id}/edit")
+    @GetMapping("recipe/{id}/edit")
     public String editRecipe(@PathVariable String id, Model model) {
         RecipeCommand recipeCommand = recipeService.findCommandById(Long.valueOf(id));
         if (recipeCommand != null) {
@@ -60,8 +60,7 @@ public class RecipeController {
         return String.format("redirect:/recipe/%s/show", savedCommand.getId());
     }
 
-    @GetMapping
-    @RequestMapping("recipe/{id}/delete")
+    @GetMapping("recipe/{id}/delete")
     public String deleteById(@PathVariable String id) {
         log.debug("Deleting Recipe with ID {}", id);
         recipeService.deleteById(Long.valueOf(id));
