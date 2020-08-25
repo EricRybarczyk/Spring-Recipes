@@ -68,8 +68,11 @@ public class IngredientServiceImpl implements IngredientService {
                         unitOfMeasureRepository.findById(ingredientCommand.getUnitOfMeasure().getId()).orElseThrow(() -> new RuntimeException("Unit of Measure not found"))
                 );
             } else {
-                // no match means save as new Ingredient on the existing Recipe
-                recipe.addIngredient(ingredientCommandToIngredient.convert(ingredientCommand));
+                // no match means save as new Ingredient on the existing Recipe - and set the relationship in both directions
+                Ingredient ingredient = ingredientCommandToIngredient.convert(ingredientCommand);
+                assert ingredient != null;
+                ingredient.setRecipe(recipe);
+                recipe.addIngredient(ingredient);
             }
             Recipe savedRecipe = recipeRepository.save(recipe);
 
@@ -79,8 +82,17 @@ public class IngredientServiceImpl implements IngredientService {
             if (optionalSavedIngredient.isPresent()) {
                 return ingredientToIngredientCommand.convert(optionalSavedIngredient.get());
             } else {
-                log.error("Saved Recipe {} does not contain expected Ingredient {}", ingredientCommand.getRecipeId(), ingredientCommand.getId());
-                throw new RuntimeException("Saved Recipe does not contain the Ingredient that was being saved");
+                // when saving a new ingredient, there is no ID so instead we try to find based on the other fields
+                Optional<Ingredient> newSavedIngredient = savedRecipe.getIngredients().stream()
+                        .filter(e -> e.getDescription().equals(ingredientCommand.getDescription()) &&
+                                e.getQuantity().equals(ingredientCommand.getQuantity()) &&
+                                e.getUnitOfMeasure().getId().equals(ingredientCommand.getUnitOfMeasure().getId())).findFirst();
+                if (newSavedIngredient.isPresent()) {
+                    return ingredientToIngredientCommand.convert(newSavedIngredient.get());
+                } else {
+                    log.error("Saved Recipe {} does not contain expected Ingredient {}", ingredientCommand.getRecipeId(), ingredientCommand.getId());
+                    throw new RuntimeException("Saved Recipe does not contain the Ingredient that was being saved");
+                }
             }
         }
     }

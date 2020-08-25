@@ -115,4 +115,22 @@ public class IngredientControllerTest {
                 .andExpect(MockMvcResultMatchers.view().name("redirect:/recipe/2/ingredient/1/show"));
     }
 
+    @Test
+    public void testNewIngredientFormDisplay() throws Exception {
+        // given
+        RecipeCommand recipeCommand = new RecipeCommand();
+        recipeCommand.setId(RECIPE_ID);
+        Mockito.when(recipeService.findCommandById(ArgumentMatchers.anyLong())).thenReturn(recipeCommand);
+        Mockito.when(unitOfMeasureService.listAllUnitsOfMeasure()).thenReturn(new HashSet<>());
+
+        // when-then
+        mockMvc.perform(MockMvcRequestBuilders.get("/recipe/2/ingredient/new"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("recipe/ingredient/ingredientform"))
+                .andExpect(MockMvcResultMatchers.model().attributeExists("ingredient"))
+                .andExpect(MockMvcResultMatchers.model().attributeExists("uomSet"));
+
+        Mockito.verify(recipeService, Mockito.times(1)).findCommandById(ArgumentMatchers.anyLong());
+    }
+
 }

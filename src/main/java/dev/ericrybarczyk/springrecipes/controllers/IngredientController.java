@@ -2,6 +2,7 @@ package dev.ericrybarczyk.springrecipes.controllers;
 
 import dev.ericrybarczyk.springrecipes.commands.IngredientCommand;
 import dev.ericrybarczyk.springrecipes.commands.RecipeCommand;
+import dev.ericrybarczyk.springrecipes.commands.UnitOfMeasureCommand;
 import dev.ericrybarczyk.springrecipes.services.IngredientService;
 import dev.ericrybarczyk.springrecipes.services.RecipeService;
 import dev.ericrybarczyk.springrecipes.services.UnitOfMeasureService;
@@ -64,6 +65,24 @@ public class IngredientController {
             log.warn("No data returned for requested Recipe ID {} and Ingredient ID {}", recipeId, ingredientId);
             return ERROR_VIEW; // TODO: change to return 404
         }
+    }
+
+    @GetMapping
+    @RequestMapping("/recipe/{recipeId}/ingredient/new")
+    public String addNewIngredient(@PathVariable String recipeId, Model model) {
+        RecipeCommand recipeCommand = recipeService.findCommandById(Long.valueOf(recipeId));
+        if (recipeCommand == null) {
+            log.warn("No data returned for requested Recipe ID {}", recipeId);
+            return ERROR_VIEW; // TODO: change to return 404
+        }
+
+        IngredientCommand ingredientCommand = new IngredientCommand();
+        ingredientCommand.setRecipeId(Long.valueOf(recipeId));
+        ingredientCommand.setUnitOfMeasure(new UnitOfMeasureCommand());
+        model.addAttribute("ingredient", ingredientCommand);
+        model.addAttribute("uomSet", unitOfMeasureService.listAllUnitsOfMeasure());
+
+        return "recipe/ingredient/ingredientform";
     }
 
     @PostMapping("/recipe/{recipeId}/ingredient")
