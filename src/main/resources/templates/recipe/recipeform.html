@@ -61,10 +61,12 @@
                                 </div>
                                 <div class="col-md-3 form-group">
                                     <label>Difficulty:</label>
-                                    <select class="form-control">
-                                        <option>Easy</option>
-                                        <option>Intermediate</option>
-                                        <option>Advanced</option>
+                                    <select class="form-control" th:field="*{difficulty}">
+                                        <option th:remove="all">Easy</option>
+                                        <option th:remove="all">Intermediate</option>
+                                        <option th:each="difficultyValue : ${T(dev.ericrybarczyk.springrecipes.domain.Difficulty).values()}"
+                                                th:value="${difficultyValue.name()}"
+                                                th:text="${difficultyValue.name()}">Advanced</option>
                                     </select>
                                 </div>
                             </div>
