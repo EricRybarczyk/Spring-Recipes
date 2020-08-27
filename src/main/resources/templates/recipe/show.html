@@ -29,12 +29,19 @@
                             <div class="col-md-2">
                                 <span>Categories:</span>
                             </div>
-                            <div class="col-md-10">
+                            <div class="col-md-4">
                                 <ul>
                                     <li th:remove="all">category one</li>
                                     <li th:remove="all">category two</li>
                                     <li th:each="category : ${recipe.getCategories()}"><span th:text="${category.getDescription()}">category N</span></li>
                                 </ul>
+                            </div>
+                            <div class="col-md-3">
+                                <img src="https://via.placeholder.com/150/eaeaea/646464.png?text=Spring+Boot!"
+                                     th:src="@{'/recipe/' + ${recipe.id} + '/recipeimage'}" width="150" height="150">
+                            </div>
+                            <div class="col=md-3">
+                                <a class="btn btn-default" href="#" th:href="@{'/recipe/' + ${recipe.id} + '/image'}" role="button">Change Image</a>
                             </div>
                         </div>
                         <div class="row">
