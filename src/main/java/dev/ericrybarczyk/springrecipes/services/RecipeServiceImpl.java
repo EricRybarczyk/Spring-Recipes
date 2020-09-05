@@ -4,6 +4,7 @@ import dev.ericrybarczyk.springrecipes.commands.RecipeCommand;
 import dev.ericrybarczyk.springrecipes.converters.RecipeCommandToRecipe;
 import dev.ericrybarczyk.springrecipes.converters.RecipeToRecipeCommand;
 import dev.ericrybarczyk.springrecipes.domain.Recipe;
+import dev.ericrybarczyk.springrecipes.exceptions.NotFoundException;
 import dev.ericrybarczyk.springrecipes.repositories.RecipeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,7 +37,13 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Override
     public Optional<Recipe> findById(Long id) {
-        return recipeRepository.findById(id);
+        Optional<Recipe> optionalRecipe = recipeRepository.findById(id);
+        if (optionalRecipe.isEmpty()) {
+            String message = String.format("No Recipe found for requested id %s", id);
+            log.warn(message);
+            throw new NotFoundException(message);
+        }
+        return optionalRecipe;
     }
 
     @Override
@@ -44,7 +51,9 @@ public class RecipeServiceImpl implements RecipeService {
     public RecipeCommand findCommandById(Long id) {
         Optional<Recipe> optionalRecipe = this.findById(id);
         if (optionalRecipe.isEmpty()) {
-            log.warn("No Recipe found for requested id {}", id);
+            String message = String.format("No Recipe found for requested id %s", id);
+            log.warn(message);
+            throw new NotFoundException(message);
         }
         return recipeToRecipeCommand.convert(optionalRecipe.orElse(null));
     }

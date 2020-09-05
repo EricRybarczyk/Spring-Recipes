@@ -2,6 +2,7 @@ package dev.ericrybarczyk.springrecipes.controllers;
 
 import dev.ericrybarczyk.springrecipes.commands.RecipeCommand;
 import dev.ericrybarczyk.springrecipes.domain.Recipe;
+import dev.ericrybarczyk.springrecipes.exceptions.NotFoundException;
 import dev.ericrybarczyk.springrecipes.services.RecipeService;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,6 +46,16 @@ public class RecipeControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.view().name("recipe/show"))
                 .andExpect(MockMvcResultMatchers.model().attributeExists("recipe"));
+    }
+
+    @Test
+    public void testGetRecipeAndNotFound() throws Exception {
+        // given
+        Mockito.when(recipeService.findById(ArgumentMatchers.anyLong())).thenThrow(NotFoundException.class);
+
+        // when-then
+        mockMvc.perform(MockMvcRequestBuilders.get("/recipe/1/show"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test

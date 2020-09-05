@@ -1,7 +1,9 @@
 package dev.ericrybarczyk.springrecipes.services;
 
+import dev.ericrybarczyk.springrecipes.commands.RecipeCommand;
 import dev.ericrybarczyk.springrecipes.converters.*;
 import dev.ericrybarczyk.springrecipes.domain.Recipe;
+import dev.ericrybarczyk.springrecipes.exceptions.NotFoundException;
 import dev.ericrybarczyk.springrecipes.repositories.RecipeRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,6 +24,7 @@ public class RecipeServiceImplTest {
 
     @Mock
     RecipeRepository recipeRepository;
+
 
     @Before
     public void setUp() throws Exception {
@@ -67,6 +70,23 @@ public class RecipeServiceImplTest {
         assertTrue("Expected a value but the Optional was Empty", result.isPresent());
         Mockito.verify(recipeRepository, Mockito.times(1)).findById(ArgumentMatchers.anyLong());
         Mockito.verify(recipeRepository, Mockito.never()).findAll();
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void testGetRecipeByIdAndNotFound() throws Exception {
+        Optional<Recipe> RECIPE_OPTIONAL_EMPTY = Optional.empty();
+        Mockito.when(recipeRepository.findById(ArgumentMatchers.anyLong())).thenReturn(RECIPE_OPTIONAL_EMPTY);
+        // this call should raise the exception
+        Optional<Recipe> optionalRecipeReturned = recipeService.findById(1L);
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void testGetRecipeByCommandAndNotFound() throws Exception {
+        // given
+        Optional<Recipe> RECIPE_OPTIONAL_EMPTY = Optional.empty();
+        Mockito.when(recipeRepository.findById(ArgumentMatchers.anyLong())).thenReturn(RECIPE_OPTIONAL_EMPTY);
+        // this call should raise the exception
+        RecipeCommand recipeCommand = recipeService.findCommandById(1L);
     }
 
     @Test
