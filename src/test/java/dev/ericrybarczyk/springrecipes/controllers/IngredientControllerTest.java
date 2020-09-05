@@ -2,6 +2,7 @@ package dev.ericrybarczyk.springrecipes.controllers;
 
 import dev.ericrybarczyk.springrecipes.commands.IngredientCommand;
 import dev.ericrybarczyk.springrecipes.commands.RecipeCommand;
+import dev.ericrybarczyk.springrecipes.exceptions.NotFoundException;
 import dev.ericrybarczyk.springrecipes.services.IngredientService;
 import dev.ericrybarczyk.springrecipes.services.RecipeService;
 import dev.ericrybarczyk.springrecipes.services.UnitOfMeasureService;
@@ -59,11 +60,12 @@ public class IngredientControllerTest {
     @Test
     public void testInvalidRecipeId() throws Exception {
         // given
+        Mockito.when(recipeService.findCommandById(ArgumentMatchers.anyLong())).thenThrow(NotFoundException.class);
 
         // when-then
         mockMvc.perform(MockMvcRequestBuilders.get("/recipe/5150/ingredient"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("error/error"));
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.view().name("error404"));
 
         Mockito.verify(recipeService, Mockito.times(1)).findCommandById(ArgumentMatchers.anyLong());
     }

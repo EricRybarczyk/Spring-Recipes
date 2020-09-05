@@ -5,6 +5,7 @@ import dev.ericrybarczyk.springrecipes.converters.IngredientCommandToIngredient;
 import dev.ericrybarczyk.springrecipes.converters.IngredientToIngredientCommand;
 import dev.ericrybarczyk.springrecipes.domain.Ingredient;
 import dev.ericrybarczyk.springrecipes.domain.Recipe;
+import dev.ericrybarczyk.springrecipes.exceptions.NotFoundException;
 import dev.ericrybarczyk.springrecipes.repositories.IngredientRepository;
 import dev.ericrybarczyk.springrecipes.repositories.RecipeRepository;
 import dev.ericrybarczyk.springrecipes.repositories.UnitOfMeasureRepository;
@@ -35,8 +36,7 @@ public class IngredientServiceImpl implements IngredientService {
     public IngredientCommand findByRecipeIdAndIngredientId(Long recipeID, Long ingredientId) {
         Optional<Recipe> optionalRecipe = recipeRepository.findById(recipeID);
         if (optionalRecipe.isEmpty()) {
-            log.warn("Recipe not found for ID {}", recipeID);
-            return null;
+            throw new NotFoundException(String.format("No Recipe found for requested ID %s", recipeID));
         }
         Recipe recipe = optionalRecipe.get();
         Optional<IngredientCommand> optionalIngredientCommand = recipe.getIngredients().stream()
@@ -44,8 +44,7 @@ public class IngredientServiceImpl implements IngredientService {
                 .map(ingredientToIngredientCommand::convert)
                 .findFirst();
         if (optionalIngredientCommand.isEmpty()) {
-            log.warn("Ingredient ID {} not found for Recipe ID {}", ingredientId, recipeID);
-            return null;
+            throw new NotFoundException(String.format("Ingredient ID %s not found for Recipe ID %s", ingredientId, recipeID));
         }
         return optionalIngredientCommand.get();
     }
@@ -55,8 +54,8 @@ public class IngredientServiceImpl implements IngredientService {
     public IngredientCommand saveIngredientCommand(IngredientCommand ingredientCommand) {
         Optional<Recipe> optionalRecipe = recipeRepository.findById(ingredientCommand.getRecipeId());
         if (optionalRecipe.isEmpty()) {
-            log.error("Recipe ID {} not found from IngredientCommand ID {}", ingredientCommand.getRecipeId(), ingredientCommand.getId());
-            throw new RuntimeException("Recipe not found for specified IngredientCommand");
+            throw new NotFoundException(String.format("Recipe ID %s not found from IngredientCommand ID %s", ingredientCommand.getRecipeId(), ingredientCommand.getId()));
+            //throw new RuntimeException("Recipe not found for specified IngredientCommand");
         } else {
             Recipe recipe = optionalRecipe.get();
             Optional<Ingredient> optionalIngredient = recipe.getIngredients().stream()

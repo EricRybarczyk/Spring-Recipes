@@ -16,9 +16,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import static dev.ericrybarczyk.springrecipes.controllers.ViewConstants.ERROR_VIEW;
 
+
 @Slf4j
 @Controller
-public class IngredientController {
+public class IngredientController extends BaseController {
 
     private final RecipeService recipeService;
     private final IngredientService ingredientService;
@@ -35,11 +36,8 @@ public class IngredientController {
         RecipeCommand recipeCommand = recipeService.findCommandById(Long.valueOf(id));
         if (recipeCommand != null) {
             model.addAttribute("recipe", recipeCommand);
-            return "recipe/ingredient/list";
-        } else {
-            log.warn("No Recipe found for requested ID {}", id);
-            return ERROR_VIEW; // TODO: change to return 404
         }
+        return "recipe/ingredient/list";
     }
 
     @GetMapping("/recipe/{recipeId}/ingredient/{ingredientId}/show")
