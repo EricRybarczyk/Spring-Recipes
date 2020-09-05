@@ -19,7 +19,7 @@ import static dev.ericrybarczyk.springrecipes.controllers.ViewConstants.ERROR_VI
 
 @Slf4j
 @Controller
-public class IngredientController extends BaseController {
+public class IngredientController {
 
     private final RecipeService recipeService;
     private final IngredientService ingredientService;
