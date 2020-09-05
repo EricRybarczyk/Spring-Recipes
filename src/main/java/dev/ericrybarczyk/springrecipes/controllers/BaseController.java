@@ -13,13 +13,28 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public abstract class BaseController {
 
-    @ResponseStatus(HttpStatus.NOT_FOUND) // otherwise this method will return status 200 because method is more granular level than this annotation on the custom exception class
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    // otherwise this method will return status 200 because method is more granular level than this annotation on the custom exception class
     @ExceptionHandler(NotFoundException.class)
     public ModelAndView handleNotFound(Exception e) {
-        log.error("Handling {}: {}", e.getClass().getSimpleName(), e.getMessage());
+        log.error(getExceptionLogMessage(e));
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("exception", e);
-        modelAndView.setViewName("error404");
+        modelAndView.setViewName("errors/error404");
         return modelAndView;
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(NumberFormatException.class)
+    public ModelAndView handleNumberFormat(Exception e) {
+        log.error(getExceptionLogMessage(e));
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("exception", e);
+        modelAndView.setViewName("errors/error400");
+        return modelAndView;
+    }
+
+    private String getExceptionLogMessage(Exception e) {
+        return String.format("Handling %s: %s", e.getClass().getSimpleName(), e.getMessage());
     }
 }

@@ -65,7 +65,7 @@ public class IngredientControllerTest {
         // when-then
         mockMvc.perform(MockMvcRequestBuilders.get("/recipe/5150/ingredient"))
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
-                .andExpect(MockMvcResultMatchers.view().name("error404"));
+                .andExpect(MockMvcResultMatchers.view().name("errors/error404"));
 
         Mockito.verify(recipeService, Mockito.times(1)).findCommandById(ArgumentMatchers.anyLong());
     }

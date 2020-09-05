@@ -56,28 +56,19 @@ public class RecipeControllerTest {
         // when-then
         mockMvc.perform(MockMvcRequestBuilders.get("/recipe/1/show"))
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
-                .andExpect(MockMvcResultMatchers.view().name("error404"));
+                .andExpect(MockMvcResultMatchers.view().name("errors/error404"));
     }
 
-//    @Test
-//    public void testViewInvalidRecipeId() throws Exception {
-//        // given
-//
-//        // when-then
-//        mockMvc.perform(MockMvcRequestBuilders.get("/recipe/5150/show"))
-//                .andExpect(MockMvcResultMatchers.status().isOk())
-//                .andExpect(MockMvcResultMatchers.view().name("error/error"));
-//    }
-//
-//    @Test
-//    public void testEditInvalidRecipeId() throws Exception {
-//        // given
-//
-//        // when-then
-//        mockMvc.perform(MockMvcRequestBuilders.get("/recipe/5150/edit"))
-//                .andExpect(MockMvcResultMatchers.status().isOk())
-//                .andExpect(MockMvcResultMatchers.view().name("error/error"));
-//    }
+    @Test
+    public void testGetRecipeWithNumberFormatException() throws Exception {
+        // given
+        Mockito.when(recipeService.findById(ArgumentMatchers.anyLong())).thenThrow(NumberFormatException.class);
+
+        // when-then
+        mockMvc.perform(MockMvcRequestBuilders.get("/recipe/xyz/show"))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.view().name("errors/error400"));
+    }
 
     @Test
     public void testPostNewRecipe() throws Exception {
