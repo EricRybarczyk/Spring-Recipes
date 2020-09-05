@@ -39,9 +39,7 @@ public class RecipeServiceImpl implements RecipeService {
     public Optional<Recipe> findById(Long id) {
         Optional<Recipe> optionalRecipe = recipeRepository.findById(id);
         if (optionalRecipe.isEmpty()) {
-            String message = String.format("No Recipe found for requested id %s", id);
-            log.warn(message);
-            throw new NotFoundException(message);
+            throw new NotFoundException(String.format("No Recipe found for requested ID %s", id));
         }
         return optionalRecipe;
     }
@@ -51,9 +49,7 @@ public class RecipeServiceImpl implements RecipeService {
     public RecipeCommand findCommandById(Long id) {
         Optional<Recipe> optionalRecipe = this.findById(id);
         if (optionalRecipe.isEmpty()) {
-            String message = String.format("No Recipe found for requested id %s", id);
-            log.warn(message);
-            throw new NotFoundException(message);
+            throw new NotFoundException(String.format("No Recipe found for requested ID %s", id));
         }
         return recipeToRecipeCommand.convert(optionalRecipe.orElse(null));
     }

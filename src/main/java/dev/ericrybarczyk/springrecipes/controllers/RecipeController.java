@@ -12,11 +12,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import java.util.Optional;
 
-import static dev.ericrybarczyk.springrecipes.controllers.ViewConstants.ERROR_VIEW;
 
 @Slf4j
 @Controller
-public class RecipeController {
+public class RecipeController extends BaseController {
 
     private final RecipeService recipeService;
 
@@ -27,13 +26,8 @@ public class RecipeController {
     @GetMapping("/recipe/{id}/show")
     public String showById(@PathVariable String id, Model model) {
         Optional<Recipe> optionalRecipe = recipeService.findById(Long.valueOf(id));
-        if (optionalRecipe.isPresent()) {
-            model.addAttribute("recipe", optionalRecipe.get());
-            return "recipe/show";
-        } else {
-            log.warn("No Recipe found for requested ID {}", id);
-            return ERROR_VIEW;
-        }
+        optionalRecipe.ifPresent(recipe -> model.addAttribute("recipe", recipe));
+        return "recipe/show";
     }
 
     @GetMapping("recipe/new")
@@ -47,11 +41,8 @@ public class RecipeController {
         RecipeCommand recipeCommand = recipeService.findCommandById(Long.valueOf(id));
         if (recipeCommand != null) {
             model.addAttribute("recipe", recipeCommand);
-            return "recipe/recipeform";
-        } else {
-            log.warn("No Recipe found for requested ID {}", id);
-            return ERROR_VIEW;
         }
+        return "recipe/recipeform";
     }
 
     @PostMapping("recipe")
