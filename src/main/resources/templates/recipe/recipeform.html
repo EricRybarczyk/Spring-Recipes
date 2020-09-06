@@ -32,7 +32,7 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-md-6 form-group" th:class="${#fields.hasErrors('description')} ? 'col-md-6 form-group has-error' : 'col-md-6 form-group'">
-                                    <label for="description">Recipe Description:</label>
+                                    <label for="description" th:text="#{recipe.description}">Recipe Description:</label>
                                     <input type="text" class="form-control" id="description" th:field="*{description}" th:errorclass="has-error"/>
                                     <span th:if="${#fields.hasErrors('description')}" class="help-block">
                                         <ul>
