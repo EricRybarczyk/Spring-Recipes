@@ -1,0 +1,23 @@
+# YAML instead of a flat properties file, just for variety while learning
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/spring_recipes_dev
+    username: spring_recipes_dev_user
+    password: todo-set-password-as-environment-variable
+    platform: mysql
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    database: mysql
+    show-sql: true
+# these lines will cause Hibernate to generate a MySQL database schema script based on the JPA Entity objects in the project
+#    properties:
+#      javax:
+#        persistence:
+#          schema-generation:
+#            create-source: metadata
+#            scripts:
+#                action: create
+#                create-target: spring_recipes_mysql_schema_create.sql

@@ -6,6 +6,7 @@ import dev.ericrybarczyk.springrecipes.repositories.RecipeRepository;
 import dev.ericrybarczyk.springrecipes.repositories.UnitOfMeasureRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +18,8 @@ import java.util.Map;
 
 @Slf4j
 @Component
-public class DataInitializer implements ApplicationListener<ContextRefreshedEvent> {
+@Profile("default")
+public class DataInitializerH2 implements ApplicationListener<ContextRefreshedEvent> {
 
     private final CategoryRepository categoryRepository;
     private final RecipeRepository recipeRepository;
@@ -36,7 +38,7 @@ public class DataInitializer implements ApplicationListener<ContextRefreshedEven
     public static final String CATEGORY_AMERICAN = "American";
     public static final String CATEGORY_MEXICAN = "Mexican";
 
-    public DataInitializer(CategoryRepository categoryRepository, RecipeRepository recipeRepository, UnitOfMeasureRepository unitOfMeasureRepository) {
+    public DataInitializerH2(CategoryRepository categoryRepository, RecipeRepository recipeRepository, UnitOfMeasureRepository unitOfMeasureRepository) {
         this.categoryRepository = categoryRepository;
         this.recipeRepository = recipeRepository;
         this.unitOfMeasureRepository = unitOfMeasureRepository;

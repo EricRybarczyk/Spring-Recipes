@@ -1,0 +1,14 @@
+# YAML instead of a flat properties file, just for variety while learning
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/spring_recipes_prod
+    username: spring_recipes_prod_user
+    password: todo-set-password-as-environment-variable
+    platform: mysql
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    database: mysql
+    show-sql: false
